@@ -93,16 +93,29 @@ def create_windows(df, feature_cols, label_col, fake_times, time_col="Time", win
     times = df[time_col].values
     is_end_flags = df["is_end"].values
 
+    total_windows = 0
+    dropped_due_to_end = 0
+    dropped_due_to_noise = 0
+
     X, y = [], []
     for i in range(0, len(df) - window_size + 1, stride):
+        total_windows += 1
         end_time = times[i + window_size - 1]
         window = features[i:i + window_size]
         if end_time in fake_times:
             continue
         if np.any(is_end_flags[i:i + window_size]):
+            dropped_due_to_end += 1
             continue
         if np.any(window < 0) or np.any(window > 1):
+            dropped_due_to_noise += 1
             continue
+        
+        print(f"📊 Tổng window: {total_windows}")
+        print(f"❌ Bị loại do chứa 'end': {dropped_due_to_end}")
+        print(f"❌ Bị loại do dòng giả: {dropped_due_to_fake}")
+        print(f"❌ Bị loại do nhiễu (âm hoặc > 1e9): {dropped_due_to_noise}")
+
         X.append(features[i:i + window_size])
         y.append(labels[i + window_size - 1])
     return np.array(X), np.array(y)
