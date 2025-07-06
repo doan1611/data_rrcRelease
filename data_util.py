@@ -113,7 +113,6 @@ def create_windows(df, feature_cols, label_col, fake_times, time_col="Time", win
         
         print(f"📊 Tổng window: {total_windows}")
         print(f"❌ Bị loại do chứa 'end': {dropped_due_to_end}")
-        print(f"❌ Bị loại do dòng giả: {dropped_due_to_fake}")
         print(f"❌ Bị loại do nhiễu (âm hoặc > 1e9): {dropped_due_to_noise}")
 
         X.append(features[i:i + window_size])
